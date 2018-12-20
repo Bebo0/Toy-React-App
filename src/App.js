@@ -15,11 +15,36 @@ class Helloo extends React.Component {
 }
 
 class App extends Component {
+
+  constructor(props) {
+    super(props);
+    this.state = {symbol: '', price: 0}
+  }
+
+  componentDidMount() {
+    fetch('https://www.alphavantage.co/query?function=TIME_SERIES_INTRADAY&symbol=MSFT&interval=5min&apikey=QB9SD121KOFA8PR7')
+    .then(response => response.json())
+    .then(responseData => {
+      //const myObj = {foo : responseData['Meta Data']['3. Last Refreshed']};
+     const TIME_NOW = ''+responseData['Meta Data']['3. Last Refreshed'];
+      this.setState({
+        symbol: responseData['Meta Data']['2. Symbol'],
+        price: responseData['Time Series (5min)'][TIME_NOW]['1. open']
+      })
+    })
+    .catch(err => console.error(err));
+  }
+
+
+
+
+
+
   render() {
     return (
       <div>
-        <h1>Hello World</h1>
-        <h2>From my first React app</h2>
+        <h1>Symbol: {this.state.symbol}</h1>
+        <h2>Price: ${this.state.price}</h2>
         
       </div>
     );
